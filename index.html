@@ -255,6 +255,7 @@
   .readout .name { font-size: var(--fs-body); font-weight: 700; margin: 2px 0 6px; }
   .readout .vals { font-size: 12.5px; color: var(--ink-soft); line-height: 1.5; }
   .readout .empty { font-size: 12.5px; color: #a9a597; }
+  .readout .headline { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); font-style: italic; color: var(--ink); line-height: 1.45; }
   .badge { display:inline-block; font-weight:700; color: var(--ink); }
   .roster {
     background: var(--panel); border: 1px solid var(--line);
@@ -337,7 +338,7 @@
   </div>
 
     <!-- Swap the href below for whichever doc you want recipients to open -->
-  <p class="footnote">Feel free to play around with this and take a screenshot of any layout you want to talk through. It is a live tool, so others may move chips around or hit reset. We are not wedded to these positions: this is here to help our discussion. Solid chips are our read on a fit for the cohort, and dashed chips are the ones we would flag for further discussion. Our full analysis and ratings live <a href="https://docs.google.com/document/d/19KWXO46885oPbm0EuVJLkUDFOrWCj19B-TCCsBhy9Rk/edit?tab=t.0" target="_blank" rel="noopener">in this doc</a>.</p>
+  <p class="footnote">Feel free to play around with this and take a screenshot of any layout you want to talk through. It is a live tool, so others may move chips around or hit reset. We are not wedded to these positions: this is here to help our discussion. Solid chips are our read on a fit for the cohort, and dashed chips are the ones we would flag for further discussion. Our full analysis and ratings live <a href="https://docs.google.com/document/d/1MlVcEepUYl9RIPhDmjJq235yEkUUQCGY4P1MR7QteEo/edit?usp=sharing" target="_blank" rel="noopener">in this doc</a>.</p>
 </div>
 
 <script>
@@ -366,7 +367,9 @@ const ORGS = [
   { n:"Brilliant Cities",         cat:"dyad",   impact:"High",   scale:"Med/Low",    x:43, y:79 },
   { n:"AVANCE",                   cat:"dyad",   impact:"Medium", scale:"Medium",     x:58, y:74 },
   { n:"Family Connects Intl",     cat:"dyad",   impact:"Low",    scale:"Low",        x:27, y:27 },
-  { n:"Abriendo Puertas",         cat:"dyad",   impact:"Low",    scale:"Low",        x:34, y:23, discuss:true },
+  { n:"Abriendo Puertas",         cat:"dyad",   impact:"Low/Medium", scale:"Low", x:34, y:39, discuss:true,
+    fiscal:"Low", timing:"Medium Term",
+    headline:"AP is a strong two-generation player in the field. While they have shown positive impact on parent/family outcomes, they are earlier on the evidence journey for child-level impact and should better understand this before making scaling and product decisions." },
   { n:"Parents as Teachers",      cat:"dyad",   impact:"Medium", scale:"Low",        x:23, y:49, discuss:true },
   { n:"LIFT",                     cat:"econ",   impact:"Medium", scale:"Medium",     x:49, y:57 },
   { n:"Rx Kids",                  cat:"econ",   impact:"High",   scale:"Medium",     x:56, y:85 },
@@ -457,11 +460,15 @@ function renderReadout(o) {
   document.getElementById("readoutEmpty").style.display = "none";
   document.getElementById("readoutContent").style.display = "block";
   document.getElementById("roName").textContent = o.n;
-  document.getElementById("roVals").innerHTML =
+  let html =
     `Category: <span class="badge">${CATS[o.cat].label}</span><br>` +
-    `Our read: Impact <span class="badge">${o.impact}</span>, Scalability <span class="badge">${o.scale}</span><br>` +
-    `Current plot position: Impact <span class="badge">${bucketFromVal(o.y)}</span>, Scale <span class="badge">${bucketFromVal(o.x)}</span>` +
-    (o.discuss ? `<br><span style="color:var(--flag);font-weight:700;">Our read: worth further discussion</span>` : `<br><span style="color:var(--ink-soft);font-weight:600;">Our read: fit for the cohort</span>`);
+    `Our read: Impact <span class="badge">${o.impact}</span>, Scalability <span class="badge">${o.scale}</span>`;
+  if (o.fiscal) html += `<br>Fiscal sustainability: <span class="badge">${o.fiscal}</span>`;
+  if (o.timing) html += `<br>Timing: <span class="badge">${o.timing}</span>`;
+  html += `<br>Current plot position: Impact <span class="badge">${bucketFromVal(o.y)}</span>, Scale <span class="badge">${bucketFromVal(o.x)}</span>`;
+  html += (o.discuss ? `<br><span style="color:var(--flag);font-weight:700;">Our read: worth further discussion</span>` : `<br><span style="color:var(--ink-soft);font-weight:600;">Our read: fit for the cohort</span>`);
+  if (o.headline) html += `<div class="headline">${o.headline}</div>`;
+  document.getElementById("roVals").innerHTML = html;
 }
 
 function buildRoster() {
